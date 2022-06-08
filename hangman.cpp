@@ -1,14 +1,22 @@
 #include <iostream>
+#include <vector>
+#include <fstream>
+#include <string>
+#include <time.h>
 
 using namespace std;
 
-void PrintMessage(string message, bool printTop = true, bool printBottom = true){
+void PrintMessage(string message, int printTop = 1, int printBottom = 1){
     bool front = true;
-    if (printTop){
-        cout << "+================================+" << endl;
+    if (printTop == 1){
+        cout << "+=================================+" << endl;
+        cout << "|";
+    } 
+    else if (printTop == 2){
+        cout << "+_________________________________+" << endl;
         cout << "|";
     }
-    else {
+    else if (printTop == 0){
         cout << "|";
     }
     for (int i = message.length(); i < 33; i++ ){
@@ -21,65 +29,73 @@ void PrintMessage(string message, bool printTop = true, bool printBottom = true)
         front = !front;
     }
     cout << message.c_str();
-    if (printBottom){
+    if (printBottom == 1){
         cout << "|" << endl ;
-        cout << "+================================+" << endl;
+        cout << "+=================================+" << endl;
     }
-    else {
+    if (printBottom == 2){
+        cout << "|" << endl ;
+        cout << "+_________________________________+" << endl;
+    }
+    else if (printBottom == 0){
         cout << "|" << endl;
     }
 }
 void DrawHangman(int guessCount = 0){
     if (guessCount >= 1){
-        PrintMessage("|", false, false);
+        PrintMessage("|", 0, 0);
     }
     else{
-        PrintMessage("", false, false);
+        PrintMessage("", 0, 0);
     }
 
     if (guessCount >= 2){
-        PrintMessage("|", false, false);
+        PrintMessage("|", 0, 0);
     }
     else{
-        PrintMessage("", false, false);
+        PrintMessage("", 0, 0);
     }
 
     if (guessCount >= 3){
-        PrintMessage("O", false, false);
+        PrintMessage("O", 0, 0);
     }
     else{
-        PrintMessage("", false, false);
+        PrintMessage("", 0, 0);
     }
 
     if (guessCount == 4){
-        PrintMessage("/  ", false, false);
+        PrintMessage("/  ", 0, 0);
     }
     
     if (guessCount == 5){
-        PrintMessage("/| ", false, false);
+        PrintMessage("/| ", 0, 0);
     }
 
     if (guessCount >= 6){
-        PrintMessage("/|\\", false, false);
+        PrintMessage("/|\\", 0, 0);
     }
     
     if (guessCount >= 7){
-        PrintMessage("|", false, false);
+        PrintMessage("|", 0, 0);
     }
     else{
-        PrintMessage("", false, false);
+        PrintMessage("", 0, 0);
     }
 
     if (guessCount == 8){
-        PrintMessage("/  ", false, false);
+        PrintMessage("/  ", 0, 0);
     }
 
     if (guessCount >= 9){
-        PrintMessage("/ \\", false, false);
+        PrintMessage("/ \\", 0, 0);
     }
     
-    PrintMessage("+===========+", false, false);
-    PrintMessage("|           |", false, false);
+    if (guessCount >= 10){
+        PrintMessage(" ", 0, 0);
+    }
+    
+    PrintMessage("+===========+", 0, 0);
+    PrintMessage("|           |", 0, 2);
 }
 void PrintLetters(string input, char from, char to){
     string s;
@@ -95,11 +111,10 @@ void PrintLetters(string input, char from, char to){
     PrintMessage(s, false, false);
 }
 void PrintAvailableLetters(string taken){
-    PrintMessage("_________________________________", false, false);
-    PrintMessage(" ", false, false);
+    PrintMessage(" ", 0, 0);
     PrintLetters(taken, 'A', 'M');
     PrintLetters(taken, 'N', 'Z');
-    PrintMessage("_________________________________", false, false);
+    PrintMessage("_________________________________", 0, 0);
 }
 bool PrintWordAndCheckWin(string word, string guessed){
     string s;
@@ -116,41 +131,77 @@ bool PrintWordAndCheckWin(string word, string guessed){
             s += " ";
         }
     }
-    PrintMessage("_________________________________", false, false);
-    PrintMessage(s, false);
+    PrintMessage(s, 0, 1);
 
     return won;
 }
+string RandomWord(string path){
+    string word;
+    vector<string> v;
+    ifstream reader(path);
+    if (reader.is_open()){
+        while(std::getline(reader, word))
+            v.push_back(word);
+        
+        int wordPicker = rand()  % v.size();
 
+        word = v.at(wordPicker);
+        reader.close();
+    }
+
+    return word;
+}
+int guessLeft(string word, string guessed){
+    int error = 0;
+    int gl = guessed.length();
+    for (int i = 0; i < gl; i++){
+        if (word.find(guessed[i]) == string::npos){
+            error++;
+        }
+    }
+    return error;
+}
 int main(){
-    string guesses = "PSQUARED";
-    PrintMessage("HANG MAN");
-    DrawHangman(0);
-    PrintAvailableLetters(guesses);
-    PrintMessage("[CLUE STATEMENT]", false, false);
-    PrintWordAndCheckWin("PAOPE", guesses);
+    srand(time(0));
+    string guesses;
+    string magicWord = RandomWord("HangmanText.txt");
+    int tries = 0;
+    bool win = false;
+    do
+    {
+        system("cls");
+        PrintMessage("HANG MAN");
+        DrawHangman(tries);
+        PrintAvailableLetters(guesses);
+        PrintMessage("[CLUE STATEMENT]", 0, 2);
+        win = PrintWordAndCheckWin(magicWord, guesses);
+
+        if (win){
+            break;
+        }
+        char x;
+        cout << "Enter the letter:";
+        cin >> x;
+
+        if (guesses.find(x) == string::npos){
+            guesses += x;
+        }
+        tries = guessLeft(magicWord, guesses);
+    } while (tries < 10);
+    
+    if (win){
+        PrintMessage("You WON!", 0, 1);
+    }
+    else {
+        system("cls");
+        PrintMessage("HANG MAN");
+        DrawHangman(tries);
+        PrintAvailableLetters(guesses);
+        PrintMessage("[CLUE STATEMENT]", 0, 2);
+        PrintMessage("GAME OVER", 0, 1);
+    }
+
+    system("pause");
     return 0;
 }
 
-/*
-+=================================+
-|            HANG MAN             |
-+=================================+
-|                |                |
-|                |                |
-|                O                |
-|               /|\               |
-|                |                |
-|               / \               |
-|          +===========+          |
-|          |           |          |
-+=================================+
-|       [Question or statment]    |
-+=================================+
-|  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _  |
-+=================================+
-|    A B C D E F G H I J K L M    |
-|    N O P Q R S T U V W X Y Z    |
-+=================================+
-Input a letter:
-*/
