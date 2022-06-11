@@ -1,10 +1,47 @@
 #include <iostream>
+#include <stdlib.h>
 #include <vector>
 #include <fstream>
 #include <string>
 #include <time.h>
-
+#include <windows.h>
 using namespace std;
+
+
+void PrintMessage(string message, int printTop, int printBottom);
+void DrawHangman(int guessCount);
+void PrintLetters(string input, char from, char to);
+void PrintAvailableLetters(string taken);
+bool PrintWordAndCheckWin(string word, string guessed);
+string RandomWord(string path);
+int guessLeft(string word, string guessed);
+void gameLoop();
+void close();
+void about();
+
+int main(){
+    char option;
+    system("cls");
+    cout << "[Main Menu]" << endl;
+    cout << "1) Start game" << endl;
+    cout << "2) About" << endl;
+    cout << "3) Exit" << endl;
+    cout << "Enter option:";
+    cin >> option;
+
+    if (option == '1'){
+        gameLoop();
+    }
+    else if (option == '2'){
+        about();
+    }
+    else if (option == '3'){
+        close();
+    }
+
+    return 0;
+}
+
 
 void PrintMessage(string message, int printTop = 1, int printBottom = 1){
     bool front = true;
@@ -161,7 +198,8 @@ int guessLeft(string word, string guessed){
     }
     return error;
 }
-int main(){
+void gameLoop(){
+    char option;
     srand(time(0));
     string guesses;
     string magicWord = RandomWord("HangmanText.txt");
@@ -169,7 +207,9 @@ int main(){
     bool win = false;
     do
     {
+        
         system("cls");
+        cout << "Menu > Hangman" << endl;
         PrintMessage("HANG MAN");
         DrawHangman(tries);
         PrintAvailableLetters(guesses);
@@ -201,7 +241,69 @@ int main(){
         PrintMessage("GAME OVER", 0, 1);
     }
 
+    cout << "Do you wish to continue?" << endl;
+    cout << "[y] yes | [n] no" << endl;
+    cin >> option;
+
+    if (option == 'y'){
+        cout << "Loading game. Please wait..." << endl;
+        system("Pause");
+        gameLoop();
+    } else if (option == 'n'){
+        cout << "Returning to main menu. Please wait..." << endl;
+        system("Pause");
+        main();
+    } else {
+        system("cls");
+        cout << "You have input an invalid key. Returning to menu..." << endl;
+        system("Pause");
+        main();
+    }
+
     system("pause");
-    return 0;
 }
 
+void close(){
+    char x;
+    int seconds;
+    cout << "Menu > Exit" << endl;
+    system("cls");
+    cout << "Are you sure you want to quit?" << endl;
+    cout << "[y] yes | [n] no" << endl;
+    cin >> x;
+    if (x == 'y'){
+        cout << "Thank you!" << endl;
+        exit(EXIT_SUCCESS);
+    } else if (x == 'n'){
+        cout << "Returning to main menu. Please wait..." << endl;
+        system("Pause");
+        main();
+    } else {
+        system("cls");
+        cout << "Warning! Explotion will occur in..." << endl;
+        for (seconds = 3; seconds >= 1; seconds--){
+            cout << seconds << endl;
+            Sleep(1000);
+        }
+        cout << "Joke, binuang ra bitaw to -- UwU " << endl;
+
+        system("Pause");
+        main();
+    }
+}
+void about(){
+    system("cls");
+    cout << "Menu > About" << endl;
+    cout << "==========================" << endl;
+    cout << "| HangMan [Console Game] |" << endl;
+    cout << "==========================" << endl;
+    cout << "Programmer: Paolo Angelo E. Porlas" << endl << endl;
+    cout << "            Don Lhean M. Otadoy" << endl;
+    cout << "            Mika Dela Torre" << endl;
+    cout << "Project: Finals Exam" << endl;
+    cout << "Professor: David Matthew Derit" << endl;
+    cout << "Course: Programming Logic and Design 2" << endl;
+
+    system("Pause");
+    main();
+}
