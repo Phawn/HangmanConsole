@@ -7,7 +7,7 @@
 #include <windows.h>
 using namespace std;
 
-
+//database and system
 void PrintMessage(string message, int printTop, int printBottom);
 void DrawHangman(int guessCount);
 void PrintLetters(string input, char from, char to);
@@ -15,9 +15,17 @@ void PrintAvailableLetters(string taken);
 bool PrintWordAndCheckWin(string word, string guessed);
 string RandomWord(string path);
 int guessLeft(string word, string guessed);
-void gameLoop();
+//Game modes
+void gameHard();
+void gameNormal();
+void gameEasy();
+//Menu UI
+void gameStart();
 void close();
 void about();
+void gameinstruct();
+
+
 
 int main(){
     char option;
@@ -25,17 +33,21 @@ int main(){
     cout << "[Main Menu]" << endl;
     cout << "1) Start game" << endl;
     cout << "2) About" << endl;
-    cout << "3) Exit" << endl;
+    cout << "3) Instructions" << endl;
+    cout << "4) Exit" << endl;
     cout << "Enter option:";
     cin >> option;
 
     if (option == '1'){
-        gameLoop();
+        gameStart();
     }
     else if (option == '2'){
         about();
     }
     else if (option == '3'){
+        gameinstruct();
+    }
+    else if (option == '4'){
         close();
     }
 
@@ -198,7 +210,36 @@ int guessLeft(string word, string guessed){
     }
     return error;
 }
-void gameLoop(){
+
+
+void gameStart(){
+    char x;
+    system("cls");
+    cout << "Menu > Start" << endl;
+    cout << "Set difficulty" << endl;
+    cout << "1. Easy" << endl;
+    cout << "2. Normal" << endl;
+    cout << "3. Hard" << endl;
+    cout << ">";
+    cin >> x;
+    if (x == '1'){
+        gameEasy();
+    }
+    else if (x == '2'){
+        gameNormal();
+    }
+    else if (x == '3'){
+        gameHard();
+    }
+    else {
+        system("cls");
+        cout << "Incorrect input. Returning to menu..." << endl;
+        system("Pause");
+        main();
+    }
+
+}
+void gameEasy(){
     char option;
     srand(time(0));
     string guesses;
@@ -220,9 +261,9 @@ void gameLoop(){
             break;
         }
         char x;
-        cout << "Enter the letter:";
+        cout << "Enter a letter:";
         cin >> x;
-
+        x = toupper(x);
         if (guesses.find(x) == string::npos){
             guesses += x;
         }
@@ -248,7 +289,7 @@ void gameLoop(){
     if (option == 'y'){
         cout << "Loading game. Please wait..." << endl;
         system("Pause");
-        gameLoop();
+        gameEasy();
     } else if (option == 'n'){
         cout << "Returning to main menu. Please wait..." << endl;
         system("Pause");
@@ -262,7 +303,134 @@ void gameLoop(){
 
     system("pause");
 }
+void gameNormal(){
+    char option;
+    srand(time(0));
+    string guesses;
+    string magicWord = RandomWord("wordLibrary.txt");
+    int tries = 0;
+    bool win = false;
+    do
+    {
+        
+        system("cls");
+        cout << "Menu > Hangman" << endl;
+        PrintMessage("HANG MAN");
+        DrawHangman(tries);
+        PrintAvailableLetters(guesses);
+        PrintMessage("[CLUE STATEMENT]", 0, 2);
+        win = PrintWordAndCheckWin(magicWord, guesses);
 
+        if (win){
+            break;
+        }
+        char x;
+        cout << "Enter a letter:";
+        cin >> x;
+        x = toupper(x);
+        if (guesses.find(x) == string::npos){
+            guesses += x;
+        }
+        tries = guessLeft(magicWord, guesses);
+    } while (tries < 10);
+    
+    if (win){
+        PrintMessage("You WON!", 0, 1);
+    }
+    else {
+        system("cls");
+        PrintMessage("HANG MAN");
+        DrawHangman(tries);
+        PrintAvailableLetters(guesses);
+        PrintMessage("[CLUE STATEMENT]", 0, 2);
+        PrintMessage("GAME OVER", 0, 1);
+    }
+
+    cout << "Do you wish to continue?" << endl;
+    cout << "[y] yes | [n] no" << endl;
+    cin >> option;
+
+    if (option == 'y'){
+        cout << "Loading game. Please wait..." << endl;
+        system("Pause");
+        gameNormal();
+    } else if (option == 'n'){
+        cout << "Returning to main menu. Please wait..." << endl;
+        system("Pause");
+        main();
+    } else {
+        system("cls");
+        cout << "You have input an invalid key. Returning to menu..." << endl;
+        system("Pause");
+        main();
+    }
+
+    system("pause");
+}
+void gameHard(){
+    char option;
+    srand(time(0));
+    string guesses;
+    string magicWord = RandomWord("wordLibrary.txt");
+    int tries = 0;
+    bool win = false;
+    do
+    {
+        
+        system("cls");
+        cout << "Menu > Hangman" << endl;
+        PrintMessage("HANG MAN");
+        DrawHangman(tries);
+        PrintAvailableLetters(guesses);
+        PrintMessage("[ERROR CLUE NOT FOUND]", 0, 2);
+        win = PrintWordAndCheckWin(magicWord, guesses);
+
+        if (win){
+            break;
+        }
+        char x;
+        cout << "Enter a letter:";
+        cin >> x;
+        x = toupper(x);
+        if (guesses.find(x) == string::npos){
+            guesses += x;
+        }
+        tries = guessLeft(magicWord, guesses);
+    } while (tries < 10);
+    
+    if (win){
+        PrintMessage("You WON!", 0, 1);
+    }
+    else {
+        system("cls");
+        PrintMessage("HANG MAN");
+        DrawHangman(tries);
+        PrintAvailableLetters(guesses);
+        PrintMessage("[CLUE STATEMENT]", 0, 2);
+        PrintMessage("GAME OVER", 0, 1);
+    }
+
+    cout << "Do you wish to continue?" << endl;
+    cout << "[y] yes | [n] no" << endl;
+    cin >> option;
+
+    if (option == 'y'){
+        cout << "Loading game. Please wait..." << endl;
+        system("Pause");
+        gameHard();
+    } else if (option == 'n'){
+        cout << "Returning to main menu. Please wait..." << endl;
+        system("Pause");
+        main();
+    } else {
+        system("cls");
+        cout << "You have input an invalid key. Returning to menu..." << endl;
+        system("Pause");
+        main();
+    }
+
+    system("pause");
+}
 void close(){
     char x;
     int seconds;
@@ -303,6 +471,17 @@ void about(){
     cout << "Project: Finals Exam" << endl;
     cout << "Professor: David Matthew Derit" << endl;
     cout << "Course: Programming Logic and Design 2" << endl;
+
+    system("Pause");
+    main();
+}
+void gameinstruct(){
+    system("cls");
+    cout << "Menu > Instructions" << endl;
+    cout << "==========================" << endl;
+    cout << "| HangMan [Console Game] |" << endl;
+    cout << "==========================" << endl;
+    cout << "Hangman is a simple word guessing game. Players try to figure out an unknown word by guessing letters. If too many letters which do not appear in the word are guessed, the player is hanged (and loses)and if the player manage to guess the correct word, they win. Every time the player wins they earn points which they can spend on power ups. Don't worry the game will give you some clue depending on the difficulty the player chose." << endl;
 
     system("Pause");
     main();
