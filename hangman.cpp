@@ -202,7 +202,7 @@ void gameLoop(){
     char option;
     srand(time(0));
     string guesses;
-    string magicWord = RandomWord("HangmanText.txt");
+    string magicWord = RandomWord("wordLibrary.txt");
     int tries = 0;
     bool win = false;
     do
