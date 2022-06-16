@@ -7,7 +7,7 @@
 #include <windows.h>
 using namespace std;
 
-//database and system
+//database address
 void PrintMessage(string message, int printTop, int printBottom);
 void DrawHangman(int guessCount);
 void PrintLetters(string input, char from, char to);
@@ -15,17 +15,15 @@ void PrintAvailableLetters(string taken);
 bool PrintWordAndCheckWin(string word, string guessed);
 string RandomWord(string path);
 int guessLeft(string word, string guessed);
-//Game modes
+//modes address
 void gameHard();
 void gameNormal();
 void gameEasy();
-//Menu UI
+//UI address
 void gameStart();
 void close();
 void about();
 void gameinstruct();
-
-
 
 int main(){
     char option;
@@ -53,8 +51,7 @@ int main(){
 
     return 0;
 }
-
-
+//game system and database
 void PrintMessage(string message, int printTop = 1, int printBottom = 1){
     bool front = true;
     if (printTop == 1){
@@ -210,8 +207,7 @@ int guessLeft(string word, string guessed){
     }
     return error;
 }
-
-
+//selection menu and game
 void gameStart(){
     char x;
     system("cls");
@@ -243,7 +239,7 @@ void gameEasy(){
     char option;
     srand(time(0));
     string guesses;
-    string magicWord = RandomWord("wordLibrary.txt");
+    string magicWord = RandomWord("Four-SixWords.txt");
     int tries = 0;
     bool win = false;
     do
@@ -254,7 +250,7 @@ void gameEasy(){
         PrintMessage("HANG MAN");
         DrawHangman(tries);
         PrintAvailableLetters(guesses);
-        PrintMessage("[CLUE STATEMENT]", 0, 2);
+        PrintMessage("THEME: [FRUITS & VEGGIES!]", 0, 2);
         win = PrintWordAndCheckWin(magicWord, guesses);
 
         if (win){
@@ -278,8 +274,9 @@ void gameEasy(){
         PrintMessage("HANG MAN");
         DrawHangman(tries);
         PrintAvailableLetters(guesses);
-        PrintMessage("[CLUE STATEMENT]", 0, 2);
+        PrintMessage("THEME: [FRUITS!]", 0, 2);
         PrintMessage("GAME OVER", 0, 1);
+        cout << "SALVATION WORD: " << magicWord << endl;
     }
 
     cout << "Do you wish to continue?" << endl;
@@ -307,7 +304,7 @@ void gameNormal(){
     char option;
     srand(time(0));
     string guesses;
-    string magicWord = RandomWord("wordLibrary.txt");
+    string magicWord = RandomWord("Seven-TenWords.txt");
     int tries = 0;
     bool win = false;
     do
@@ -318,7 +315,7 @@ void gameNormal(){
         PrintMessage("HANG MAN");
         DrawHangman(tries);
         PrintAvailableLetters(guesses);
-        PrintMessage("[CLUE STATEMENT]", 0, 2);
+        PrintMessage("THEME: [COUNTRIES / STATES]", 0, 2);
         win = PrintWordAndCheckWin(magicWord, guesses);
 
         if (win){
@@ -342,8 +339,9 @@ void gameNormal(){
         PrintMessage("HANG MAN");
         DrawHangman(tries);
         PrintAvailableLetters(guesses);
-        PrintMessage("[CLUE STATEMENT]", 0, 2);
+        PrintMessage("THEME: [COUNTRIES / STATES]", 0, 2);
         PrintMessage("GAME OVER", 0, 1);
+        cout << "SALVATION WORD: " << magicWord << endl;
     }
 
     cout << "Do you wish to continue?" << endl;
@@ -371,7 +369,7 @@ void gameHard(){
     char option;
     srand(time(0));
     string guesses;
-    string magicWord = RandomWord("wordLibrary.txt");
+    string magicWord = RandomWord("Eleven-twelveWords.txt");
     int tries = 0;
     bool win = false;
     do
@@ -382,7 +380,7 @@ void gameHard(){
         PrintMessage("HANG MAN");
         DrawHangman(tries);
         PrintAvailableLetters(guesses);
-        PrintMessage("[ERROR CLUE NOT FOUND]", 0, 2);
+        PrintMessage("[ERROR THEME NOT FOUND]", 0, 2);
         win = PrintWordAndCheckWin(magicWord, guesses);
 
         if (win){
@@ -406,8 +404,9 @@ void gameHard(){
         PrintMessage("HANG MAN");
         DrawHangman(tries);
         PrintAvailableLetters(guesses);
-        PrintMessage("[CLUE STATEMENT]", 0, 2);
+        PrintMessage("[ERROR THEME NOT FOUND]", 0, 2);
         PrintMessage("GAME OVER", 0, 1);
+        cout << "SALVATION WORD: " << magicWord << endl;
     }
 
     cout << "Do you wish to continue?" << endl;
