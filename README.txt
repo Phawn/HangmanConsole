@@ -1,6 +1,6 @@
 NOTICE!
 
-This program is developed by students from University of Banilad for the submission requirements of their Final semister.
+This program is developed by students from University of Cebu: Banilad for the submission requirements of their Final semister.
 
 Note addressed to our professor, Sir Derit regarding with the power-up system.
 
