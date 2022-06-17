@@ -1,20 +1,30 @@
 #include <iostream>
+#include <iomanip>
 #include <stdlib.h>
 #include <vector>
 #include <fstream>
 #include <string>
 #include <time.h>
 #include <windows.h>
+
 using namespace std;
 
+//general variables
+string playerName;
+int Escore = 0;
+int Nscore = 0;
+int Hscore = 0;
 //database address
 void PrintMessage(string message, int printTop, int printBottom);
 void DrawHangman(int guessCount);
 void PrintLetters(string input, char from, char to);
 void PrintAvailableLetters(string taken);
+void playerLog();
+void HighScore();
 bool PrintWordAndCheckWin(string word, string guessed);
 string RandomWord(string path);
 int guessLeft(string word, string guessed);
+int pointSystem(int SCORE, int tries, int points);
 //modes address
 void gameHard();
 void gameNormal();
@@ -30,9 +40,11 @@ int main(){
     system("cls");
     cout << "[Main Menu]" << endl;
     cout << "1) Start game" << endl;
-    cout << "2) About" << endl;
+    cout << "2) Login" << endl;
     cout << "3) Instructions" << endl;
-    cout << "4) Exit" << endl;
+    cout << "4) High Score" << endl;
+    cout << "5) About" << endl;
+    cout << "6) Exit" << endl;
     cout << "Enter option:";
     cin >> option;
 
@@ -40,14 +52,33 @@ int main(){
         gameStart();
     }
     else if (option == '2'){
-        about();
+        playerLog();
     }
     else if (option == '3'){
         gameinstruct();
     }
     else if (option == '4'){
+        HighScore();
+    }
+    else if (option == '5'){
+        about();
+    }
+    else if (option == '6'){
         close();
     }
+    else {
+        system("cls");
+        cout << "Warning! Explotion will occur in...";
+        for (int seconds = 3; seconds >= 1; seconds--){
+            cout << seconds << ".";
+            Sleep(1000);
+        }
+        cout << "\nJoke UwU, Your options are only numbers 1-6" << endl;
+
+        system("Pause");
+        main();
+    }
+    
 
     return 0;
 }
@@ -207,6 +238,12 @@ int guessLeft(string word, string guessed){
     }
     return error;
 }
+int pointSystem(int HSCORE, int tries, int points, int multiplier){
+    int score;
+    score = HSCORE + points - (tries * multiplier);
+    cout << "Points: " << score << endl;
+    return score;
+}
 //selection menu and game
 void gameStart(){
     char x;
@@ -268,14 +305,16 @@ void gameEasy(){
     
     if (win){
         PrintMessage("You WON!", 0, 1);
+        Escore = pointSystem(Escore, tries, 10, 1);
     }
     else {
         system("cls");
         PrintMessage("HANG MAN");
         DrawHangman(tries);
         PrintAvailableLetters(guesses);
-        PrintMessage("THEME: [FRUITS!]", 0, 2);
+        PrintMessage("THEME: [FRUITS & VEGGIES!]", 0, 2);
         PrintMessage("GAME OVER", 0, 1);
+        Escore = pointSystem(Escore, tries, 10, 1);
         cout << "SALVATION WORD: " << magicWord << endl;
     }
 
@@ -333,6 +372,7 @@ void gameNormal(){
     
     if (win){
         PrintMessage("You WON!", 0, 1);
+        Nscore = pointSystem(Nscore, tries, 10, 1.5);
     }
     else {
         system("cls");
@@ -341,6 +381,7 @@ void gameNormal(){
         PrintAvailableLetters(guesses);
         PrintMessage("THEME: [COUNTRIES / STATES]", 0, 2);
         PrintMessage("GAME OVER", 0, 1);
+        Nscore = pointSystem(Nscore, tries, 10, 1.5);
         cout << "SALVATION WORD: " << magicWord << endl;
     }
 
@@ -398,6 +439,7 @@ void gameHard(){
     
     if (win){
         PrintMessage("You WON!", 0, 1);
+        Hscore = pointSystem(Hscore, tries, 23, 2);
     }
     else {
         system("cls");
@@ -406,6 +448,7 @@ void gameHard(){
         PrintAvailableLetters(guesses);
         PrintMessage("[ERROR THEME NOT FOUND]", 0, 2);
         PrintMessage("GAME OVER", 0, 1);
+        Hscore = pointSystem(Hscore, tries, 23, 2);
         cout << "SALVATION WORD: " << magicWord << endl;
     }
 
@@ -429,6 +472,27 @@ void gameHard(){
     }
 
     system("pause");
+}
+void HighScore(){
+    system("cls");
+    cout << "\t\tHIGH SCORE" << endl;
+    cout << setfill('.');
+    cout << playerName << "(EASY)" << setw(33) << Escore << endl;
+    cout << playerName << "(NORMAL)" << setw(33) << Nscore << endl;
+    cout << playerName << "(HARD)" << setw(33) << Hscore << endl;
+    system("pause");
+    main();
+}
+void playerLog(){
+    system("cls");
+    cout << "Menu > Login" << endl;
+    cout << "Enter your name:";
+    cin >> playerName;
+    cout << "Initializing username... Please wait.." << endl;
+    Sleep(1000);
+    cout << "Username initialized!" << endl;
+    system("pause");
+    main();
 }
 void close(){
     char x;
@@ -464,9 +528,9 @@ void about(){
     cout << "==========================" << endl;
     cout << "| HangMan [Console Game] |" << endl;
     cout << "==========================" << endl;
-    cout << "Programmer: Paolo Angelo E. Porlas" << endl << endl;
-    cout << "            Don Lhean M. Otadoy" << endl;
-    cout << "            Mika Dela Torre" << endl;
+    cout << "Programmer: Paolo Angelo E. Porlas" << endl;
+    cout << "            Don Lhean M. Otadoy (9/10)" << endl;
+    cout << "            Mika Dela Torre (8/10)" << endl;
     cout << "Project: Finals Exam" << endl;
     cout << "Professor: David Matthew Derit" << endl;
     cout << "Course: Programming Logic and Design 2" << endl;
@@ -480,7 +544,7 @@ void gameinstruct(){
     cout << "==========================" << endl;
     cout << "| HangMan [Console Game] |" << endl;
     cout << "==========================" << endl;
-    cout << "Hangman is a simple word guessing game. Players try to figure out an unknown word by guessing letters. If too many letters which do not appear in the word are guessed, the player is hanged (and loses)and if the player manage to guess the correct word, they win. Every time the player wins they earn points which they can spend on power ups. Don't worry the game will give you some clue depending on the difficulty the player chose." << endl;
+    cout << "Hangman is a simple word guessing game. Players try to figure out an unknown word by guessing letters. If too many letters which do not appear in the word are guessed, the player is hanged (and loses)and if the player manage to guess the correct word, they win. Every time the player wins they earn points. Don't worry the game will give you some clue depending on the difficulty the player chose." << endl;
 
     system("Pause");
     main();
